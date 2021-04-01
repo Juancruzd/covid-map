@@ -22,15 +22,10 @@ $(document).ready(function() {
 function floatchart() {
     // [ support-chart ] start
     $(function() {
-    var requestOptions = {
-        method: 'GET',
-        redirect: 'follow'
-      };
-      
-      fetch("https://api.covid19api.com/total/country/mexico/status/confirmed", requestOptions)
+        fetch("https://disease.sh/v3/covid-19/historical/mexico?lastdays=all")
         .then(response => { 
             response.json().then(function(dato) {   
-                console.log(dato); 
+                //console.log(dato.timeline.cases); 
                 var dates = []; 
                 var values= [];   
                 Object.entries(dato.timeline.cases).forEach(([key, value]) => {
