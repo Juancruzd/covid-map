@@ -3,47 +3,76 @@ $(document).ready(function() {
     setTimeout(function() {
         floatchart()
     }, 100);
+    fetch("https://corona.lmao.ninja/v3/covid-19/countries/mexico")
+        .then(response => { 
+            response.json().then(function(dato) {   
+                document.getElementById('casesnational').innerHTML ="<img src="+dato.countryInfo.flag+" alt='' style='width: 20px;'>   "+dato.cases.toLocaleString();
+                document.getElementById('todayCasesnational').innerHTML =dato.todayCases.toLocaleString();
+                document.getElementById('deathsnational').innerHTML =dato.deaths.toLocaleString();
+                document.getElementById('recoverednational').innerHTML =dato.recovered.toLocaleString();
+                document.getElementById('activenational').innerHTML =dato.active.toLocaleString();
+                document.getElementById('updatednational').innerHTML = new Date(dato.updated).toLocaleString('es-us', { hour12: true }); 
+            
+            });
+    }).catch(err => {
+        console.log(err);
+    });
 });
 
 function floatchart() {
     // [ support-chart ] start
     $(function() {
-        var options1 = {
-            chart: {
-                type: 'area',
-                height: 80,
-                sparkline: {
-                    enabled: true
-                }
-            },
-            colors: ["#4680ff"],
-            stroke: {
-                curve: 'smooth',
-                width: 2,
-            },
-            series: [{
-                data: [0, 20, 10, 45, 30, 55, 20, 30, 0]
-            }],
-            tooltip: {
-                fixed: {
-                    enabled: false
-                },
-                x: {
-                    show: false
-                },
-                y: {
-                    title: {
-                        formatter: function(seriesName) {
-                            return 'Ticket '
+        fetch("https://disease.sh/v3/covid-19/historical/mexico?lastdays=all")
+        .then(response => { 
+            response.json().then(function(dato) {   
+                //console.log(dato.timeline.cases); 
+                var dates = []; 
+                var values= [];   
+                Object.entries(dato.timeline.cases).forEach(([key, value]) => {
+                dates.push(key.toString());
+                values.push(value);
+                }); 
+                var options1 = {
+                    chart: {
+                        type: 'area',
+                        height: 80,
+                        sparkline: {
+                            enabled: true
+                        }
+                    },
+                    colors: ["#4680ff"],
+                    stroke: {
+                        curve: 'smooth',
+                        width: 2,
+                    },
+                    series: [{
+                        data: values
+                    }],
+                    tooltip: {
+                        fixed: {
+                            enabled: false
+                        },
+                        x: {
+                            show: false
+                        },
+                        y: {
+                            title: {
+                                formatter: function(seriesName) {
+                                    return 'Casos '
+                                }
+                            }
+                        },
+                        marker: {
+                            show: false
                         }
                     }
-                },
-                marker: {
-                    show: false
                 }
-            }
-        }
-        new ApexCharts(document.querySelector("#support-chart"), options1).render();
+                new ApexCharts(document.querySelector("#support-chart"), options1).render();
+            });
+        }).catch(err => {
+            console.log(err);
+        });
+        
     });
     // [ support-chart ] end
     // [ support-chart1 ] start
